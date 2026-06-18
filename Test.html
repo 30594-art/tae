@@ -1,0 +1,1021 @@
+<!doctype html>
+<html lang="th" class="h-full scroll-smooth">
+ <head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Healthy Advice - Premium Search Edition</title>
+  <script src="https://cdn.tailwindcss.com/3.4.17"></script>
+  <script src="https://cdn.jsdelivr.net/npm/lucide@0.263.0/dist/umd/lucide.min.js"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Thai:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: { thai: ['Noto Sans Thai', 'sans-serif'] },
+          colors: {
+            brand: {
+              primary: '#2563eb', 
+              secondary: '#10b981',
+              dark: '#1e293b'
+            }
+          }
+        }
+      }
+    };
+  </script>
+  <style>
+    body { font-family: 'Noto Sans Thai', sans-serif; }
+    .nav-link { position: relative; transition: color 0.3s; }
+    .nav-link::after { content: ''; position: absolute; bottom: -4px; left: 0; width: 0; height: 2px; background: #2563eb; transition: width 0.3s; }
+    .nav-link:hover::after { width: 100%; }
+  </style>
+ </head>
+ <body class="bg-slate-50/50 text-slate-800 min-h-full">
+
+  <!-- ================= AUTH SCREEN ================= -->
+  <div id="auth-screen" class="fixed inset-0 bg-[#f8fafc] z-50 flex flex-col items-center justify-center p-4 overflow-y-auto">
+    <div class="text-center mb-6 flex flex-col items-center">
+      <div class="w-16 h-16 bg-gradient-to-br from-cyan-400 to-emerald-500 rounded-2xl flex items-center justify-center shadow-md mb-3">
+        <i data-lucide="heart-pulse" class="w-9 h-9 text-white"></i>
+      </div>
+      <h1 class="text-3xl font-bold text-slate-900 tracking-tight">Healthy Advice</h1>
+      <p class="text-sm text-slate-500 mt-1">ระบบจัดการและดูแลสุขภาพอย่างเป็นมืออาชีพ</p>
+    </div>
+
+    <div class="bg-white w-full max-w-[450px] rounded-3xl shadow-xl shadow-slate-200/60 p-8 border border-slate-100">
+      
+      <div id="login-view">
+        <h2 class="text-2xl font-bold text-slate-900 mb-1">เข้าสู่ระบบ</h2>
+        <p class="text-sm text-slate-400 mb-6">กรุณากรอกบัญชีผู้ใช้ของคุณเพื่อดำเนินการต่อ</p>
+        
+        <form id="login-form" class="space-y-4">
+          <div>
+            <label class="block text-xs font-semibold text-slate-600 mb-1.5">อีเมลผู้ใช้ (Username)</label>
+            <input type="email" id="login-email" required class="w-full px-4 py-2.5 rounded-xl border border-slate-200 focus:outline-none focus:border-brand-primary focus:ring-2 focus:ring-blue-100 transition text-sm" placeholder="example@email.com" value="admin@healthy.com">
+          </div>
+          <div>
+            <label class="block text-xs font-semibold text-slate-600 mb-1.5">รหัสผ่าน</label>
+            <input type="password" id="login-password" required class="w-full px-4 py-2.5 rounded-xl border border-slate-200 focus:outline-none focus:border-brand-primary focus:ring-2 focus:ring-blue-100 transition text-sm" placeholder="••••••••" value="1234">
+          </div>
+          <button type="submit" class="w-full py-3 bg-brand-primary hover:bg-blue-700 text-white rounded-xl font-medium text-sm transition flex items-center justify-center gap-2 mt-2 shadow-lg shadow-blue-600/10">
+            <i data-lucide="log-in" class="w-4 h-4"></i>เข้าสู่ระบบ
+          </button>
+        </form>
+        <div class="text-center text-xs text-slate-500 mt-5">
+          ยังไม่มีบัญชีใช้งาน? <button onclick="toggleAuthMode('register')" class="text-brand-primary hover:underline font-bold">สมัครสมาชิกใหม่ที่นี่</button>
+        </div>
+      </div>
+
+      <div id="register-view" class="hidden">
+        <h2 class="text-2xl font-bold text-slate-900 mb-1">สมัครสมาชิกใหม่</h2>
+        <p class="text-sm text-slate-400 mb-6">สร้างบัญชีสำหรับเข้าใช้งานระบบส่งนัดหมายและค้นหาอาการ</p>
+        
+        <form id="register-form" class="space-y-4">
+          <div>
+            <label class="block text-xs font-semibold text-slate-600 mb-1.5">ชื่อ-นามสกุล</label>
+            <input type="text" id="reg-name" required class="w-full px-4 py-2.5 rounded-xl border border-slate-200 focus:outline-none focus:border-brand-primary transition text-sm" placeholder="สมชาย ตั้งใจดี">
+          </div>
+          <div>
+            <label class="block text-xs font-semibold text-slate-600 mb-1.5">อีเมล (ใช้สำหรับเข้าสู่ระบบ)</label>
+            <input type="email" id="reg-email" required class="w-full px-4 py-2.5 rounded-xl border border-slate-200 focus:outline-none focus:border-brand-primary transition text-sm" placeholder="example@email.com">
+          </div>
+          <div>
+            <label class="block text-xs font-semibold text-slate-600 mb-1.5">รหัสผ่าน</label>
+            <input type="password" id="reg-password" required class="w-full px-4 py-2.5 rounded-xl border border-slate-200 focus:outline-none focus:border-brand-primary transition text-sm" placeholder="ตั้งรหัสผ่านของคุณ">
+          </div>
+          <button type="submit" class="w-full py-3 bg-emerald-500 hover:bg-emerald-600 text-white rounded-xl font-medium text-sm transition flex items-center justify-center gap-2 mt-2 shadow-lg shadow-emerald-600/10">
+            <i data-lucide="user-plus" class="w-4 h-4"></i>ลงทะเบียนบัญชี
+          </button>
+        </form>
+        <div class="text-center text-xs text-slate-500 mt-5">
+          มีบัญชีอยู่แล้ว? <button onclick="toggleAuthMode('login')" class="text-brand-primary hover:underline font-bold">กลับไปหน้าเข้าสู่ระบบ</button>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+
+  <!-- ================= MAIN LAYOUT ================= -->
+  <div id="main-layout" class="hidden">
+    
+    <nav class="fixed top-0 left-0 right-0 bg-white/90 backdrop-blur-md border-b border-slate-100 z-40">
+      <div class="max-w-7xl mx-auto px-6 h-16 flex items-center justify-between">
+        <a href="#home" class="flex items-center gap-2.5">
+          <div class="w-9 h-9 bg-gradient-to-br from-cyan-400 to-emerald-500 rounded-xl flex items-center justify-center shadow-sm">
+            <i data-lucide="heart-pulse" class="w-5 h-5 text-white"></i>
+          </div>
+          <span class="text-xl font-bold text-slate-900 tracking-tight">Healthy Advice</span>
+        </a>
+        
+        <div class="hidden md:flex items-center gap-6 text-[15px] font-medium text-slate-600">
+          <a href="#home" class="nav-link text-slate-900">หน้าแรก</a>
+          <a href="#about" class="nav-link">เกี่ยวกับเรา</a>
+          <a href="#services" class="nav-link">บริการ</a>
+          <a href="#appointment" class="nav-link">นัดหมาย</a>
+          <a href="#search-symptoms" class="nav-link">คัดกรองอาการและติดตาม</a>
+          <a href="#contact" class="nav-link">ติดต่อ</a>
+          
+          <button onclick="triggerAdminVerification()" id="nav-admin-btn" class="text-purple-600 font-bold bg-purple-50 hover:bg-purple-100 px-3 py-1.5 rounded-xl flex items-center gap-1.5 transition text-xs shadow-sm border border-purple-200">
+            <i data-lucide="database" class="w-3.5 h-3.5"></i> ระบบหลังบ้าน
+          </button>
+          
+          <div class="h-4 w-px bg-slate-200"></div>
+          
+          <div class="flex items-center gap-2">
+            <button onclick="openUserProfileModal()" class="flex items-center gap-1.5 px-3 py-1.5 bg-slate-100 hover:bg-slate-200 rounded-xl text-xs font-semibold text-slate-700 transition">
+              <i data-lucide="user" class="w-3.5 h-3.5 text-brand-primary"></i>
+              <span id="user-display-name">User</span>
+            </button>
+            <button onclick="logout()" class="px-3 py-1.5 bg-rose-500 hover:bg-rose-600 text-white rounded-xl text-xs font-medium flex items-center gap-1 transition">
+              <i data-lucide="log-out" class="w-3.5 h-3.5"></i> ออกจากระบบ
+            </button>
+          </div>
+        </div>
+      </div>
+    </nav>
+
+    <!-- Home Section -->
+    <section id="home" class="pt-32 pb-16 px-6 max-w-7xl mx-auto flex flex-col md:flex-row items-center gap-12 min-h-[85vh]">
+      <div class="flex-1 space-y-6">
+        <div class="inline-flex items-center gap-2 bg-blue-50 text-brand-primary px-3.5 py-1.5 rounded-full text-xs font-semibold border border-blue-100">
+          <i data-lucide="shield-check" class="w-4 h-4"></i> ศูนย์การแพทย์ครบวงจร
+        </div>
+        <h1 class="text-4xl md:text-5xl font-bold text-slate-900 leading-[1.25]">
+          ดูแลสุขภาพของคุณ<br>ด้วยทีมแพทย์มืออาชีพ
+        </h1>
+        
+        <!-- 🆕 ระบบค้นหาอาการเบื้องต้นแบบเรียลไทม์ (Symptom Quick Search Engine) -->
+        <div class="bg-white p-3 rounded-2xl shadow-xl border border-slate-100 max-w-lg space-y-3">
+          <div class="relative">
+            <i data-lucide="search" class="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400"></i>
+            <input type="text" id="symptom-search-input" oninput="searchSymptoms()" class="w-full pl-10 pr-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl focus:outline-none focus:border-brand-primary transition text-xs" placeholder="พิมพ์อาการที่พบ เช่น ปวดหัว, ไข้, ท้องเสีย, แน่นหน้าอก...">
+          </div>
+          <!-- กล่องแสดงผลลัพธ์การค้นหา -->
+          <div id="search-results-box" class="hidden bg-slate-50 rounded-xl p-3 border border-slate-100 text-xs max-h-[180px] overflow-y-auto space-y-2"></div>
+        </div>
+
+        <div class="flex items-center gap-4 pt-2">
+          <a href="#search-symptoms" class="px-5 py-3 bg-brand-primary hover:bg-blue-700 text-white rounded-xl font-medium transition shadow-md shadow-blue-600/10 flex items-center gap-2 text-sm">
+            <i data-lucide="stethoscope" class="w-4 h-4"></i> ระบบถาม-ตอบ และปฏิทินติดตาม
+          </a>
+          <a href="#appointment" class="px-5 py-3 bg-white hover:bg-slate-50 text-slate-600 border border-slate-200 rounded-xl font-medium transition flex items-center gap-2 text-sm">
+            <i data-lucide="calendar" class="w-4 h-4"></i> นัดหมายแพทย์
+          </a>
+        </div>
+      </div>
+      
+      <div class="flex-1 flex justify-center relative w-full max-w-md">
+        <div class="w-full aspect-[4/4] bg-gradient-to-br from-blue-100 via-emerald-50 to-emerald-100 rounded-[32px] shadow-sm relative flex items-center justify-center p-8">
+          <div class="flex flex-col items-center space-y-4">
+            <div class="w-20 h-20 bg-brand-primary rounded-full flex items-center justify-center text-white border-4 border-white shadow-md">
+              <i data-lucide="plus" class="w-10 h-10"></i>
+            </div>
+            <div class="w-28 h-20 bg-brand-primary/80 rounded-t-full"></div>
+          </div>
+          <div class="absolute top-6 right-6 w-10 h-10 bg-white rounded-xl shadow-md flex items-center justify-center text-emerald-500 border border-slate-100">
+            <i data-lucide="activity" class="w-5 h-5"></i>
+          </div>
+          <div class="absolute -bottom-3 left-1/2 transform -translate-x-1/2 bg-white px-4 py-2 rounded-xl shadow-md border border-slate-50 flex items-center gap-1.5 whitespace-nowrap">
+            <i data-lucide="users" class="w-4 h-4 text-brand-primary"></i>
+            <span class="text-xs font-bold text-slate-700">10,000+ ผู้ป่วย</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- About Section -->
+    <section id="about" class="py-20 bg-white border-t border-b border-slate-100 px-6">
+      <div class="max-w-7xl mx-auto space-y-16">
+        <div class="text-center max-w-2xl mx-auto space-y-3">
+          <h2 class="text-3xl font-bold text-slate-900">เกี่ยวกับเรา</h2>
+          <p class="text-slate-500 text-[15px] leading-relaxed">
+            Healthy Advice ก่อตั้งขึ้นด้วยความมุ่งมั่นในการให้บริการทางการแพทย์ที่มีคุณภาพสูง เข้าถึงได้ง่าย และเป็นมิตรกับทุกคน
+          </p>
+        </div>
+        
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
+          <div class="space-y-8">
+            <h3 class="text-xl font-bold text-brand-primary mb-6">วิสัยทัศน์และพันธกิจ</h3>
+            <div class="flex gap-4">
+              <div class="w-10 h-10 rounded-xl bg-blue-50 text-brand-primary flex items-center justify-center shrink-0">
+                <i data-lucide="eye" class="w-5 h-5"></i>
+              </div>
+              <div>
+                <h4 class="font-bold text-slate-800 mb-1">วิสัยทัศน์</h4>
+                <p class="text-sm text-slate-500">เป็นศูนย์การแพทย์ชั้นนำที่ให้บริการดูแลสุขภาพแบบองค์รวมด้วยมาตรฐานสากล</p>
+              </div>
+            </div>
+            <div class="flex gap-4">
+              <div class="w-10 h-10 rounded-xl bg-emerald-50 text-emerald-500 flex items-center justify-center shrink-0">
+                <i data-lucide="target" class="w-5 h-5"></i>
+              </div>
+              <div>
+                <h4 class="font-bold text-slate-800 mb-1">พันธกิจ</h4>
+                <p class="text-sm text-slate-500">มุ่งเน้นการรักษาด้วยเทคโนโลยีที่ทันสมัย ควบคู่กับการดูแลผู้ป่วยอย่างใกล้ชิดและเอาใจใส่</p>
+              </div>
+            </div>
+          </div>
+          
+          <div class="bg-gradient-to-br from-blue-50/60 to-cyan-50/40 border border-slate-100 rounded-3xl p-8 grid grid-cols-2 gap-y-8 gap-x-4 text-center">
+            <div>
+              <div class="text-3xl font-bold text-brand-primary mb-1">15+</div>
+              <div class="text-xs font-medium text-slate-400">ปีประสบการณ์</div>
+            </div>
+            <div>
+              <div class="text-3xl font-bold text-emerald-500 mb-1">20+</div>
+              <div class="text-xs font-medium text-slate-400">แพทย์ผู้เชี่ยวชาญ</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Services Section -->
+    <section id="services" class="py-20 px-6 max-w-7xl mx-auto space-y-12">
+      <div class="text-center max-w-xl mx-auto space-y-3">
+        <h2 class="text-3xl font-bold text-slate-900">บริการทางการแพทย์</h2>
+        <p class="text-slate-500 text-sm">บริการครบวงจร ดูแลคุณทุกความต้องการด้านสุขภาพ</p>
+      </div>
+      
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+        <div class="bg-white p-6 rounded-2xl border border-slate-100 shadow-sm space-y-4">
+          <div class="w-10 h-10 bg-blue-50 text-brand-primary rounded-xl flex items-center justify-center"><i data-lucide="clipboard-list" class="w-5 h-5"></i></div>
+          <h3 class="font-bold text-slate-900">ตรวจสุขภาพ</h3>
+          <p class="text-xs text-slate-400 leading-relaxed">โปรแกรมตรวจสุขภาพประจำปีครบวงจร เหมาะสำหรับทุกเพศทุกวัย</p>
+        </div>
+        <div class="bg-white p-6 rounded-2xl border border-slate-100 shadow-sm space-y-4">
+          <div class="w-10 h-10 bg-emerald-50 text-emerald-500 rounded-xl flex items-center justify-center"><i data-lucide="stethoscope" class="w-5 h-5"></i></div>
+          <h3 class="font-bold text-slate-900">อายุรกรรม</h3>
+          <p class="text-xs text-slate-400 leading-relaxed">ดูแลรักษาโรคภายในทั่วไป เบาหวาน ความดัน ไขมัน</p>
+        </div>
+        <div class="bg-white p-6 rounded-2xl border border-slate-100 shadow-sm space-y-4">
+          <div class="w-10 h-10 bg-pink-50 text-pink-500 rounded-xl flex items-center justify-center"><i data-lucide="baby" class="w-5 h-5"></i></div>
+          <h3 class="font-bold text-slate-900">กุมารเวช</h3>
+          <p class="text-xs text-slate-400 leading-relaxed">ดูแลสุขภาพเด็กตั้งแต่แรกเกิดจนถึงวัยรุ่น</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- Appointment Section -->
+    <section id="appointment" class="py-20 bg-slate-50 border-t border-b border-slate-100 px-6">
+      <div class="max-w-[700px] mx-auto space-y-10">
+        <div class="text-center space-y-3">
+          <h2 class="text-3xl font-bold text-slate-900">นัดหมายแพทย์</h2>
+          <p class="text-slate-500 text-sm">กรอกข้อมูลด้านล่างเพื่อจองคิวพบแพทย์ (ข้อมูลจะถูกผูกกับบัญชีผู้ใช้ของคุณโดยอัตโนมัติ)</p>
+        </div>
+        
+        <form id="appointment-form" class="bg-[#f2faf9] border border-emerald-100 rounded-3xl p-8 space-y-5 shadow-sm">
+          <div>
+            <label class="block text-sm font-medium text-slate-700 mb-2">ชื่อ-นามสกุลผู้ป่วย</label>
+            <input type="text" id="ap-name" required class="w-full px-4 py-3 rounded-xl bg-white border border-slate-200 focus:outline-none focus:border-brand-primary transition" placeholder="กรอกชื่อ-นามสกุล">
+          </div>
+          <div>
+            <label class="block text-sm font-medium text-slate-700 mb-2">เบอร์โทรศัพท์ติดต่อ</label>
+            <input type="tel" id="ap-phone" required class="w-full px-4 py-3 rounded-xl bg-white border border-slate-200 focus:outline-none focus:border-brand-primary transition" placeholder="0XX-XXX-XXXX">
+          </div>
+          <div>
+            <label class="block text-sm font-medium text-slate-700 mb-2">เลือกแพทย์ผู้เชี่ยวชาญ</label>
+            <select id="ap-doctor" class="w-full px-4 py-3 rounded-xl bg-white border border-slate-200 focus:outline-none focus:border-brand-primary transition appearance-none">
+              <option>นพ.สมชาย ตั้งใจดี (อายุรแพทย์หัวใจ)</option>
+              <option>พญ.พิมพ์ฉัตร สมใจ (กุมารแพทย์อาวุโส)</option>
+            </select>
+          </div>
+          <div>
+            <label class="block text-sm font-medium text-slate-700 mb-2">วันที่นัดหมาย</label>
+            <input type="date" id="ap-date" required class="w-full px-4 py-3 rounded-xl bg-white border border-slate-200 focus:outline-none focus:border-brand-primary transition">
+          </div>
+          <button type="submit" class="w-full py-3.5 bg-brand-primary hover:bg-blue-700 text-white font-medium rounded-xl transition">
+            ยืนยันส่งข้อมูลนัดหมาย
+          </button>
+        </form>
+      </div>
+    </section>
+
+    <!-- ระบบคัดกรองและติดตามอาการอัจฉริยะ -->
+    <section id="search-symptoms" class="py-20 px-6 max-w-4xl mx-auto space-y-12">
+      <div class="text-center space-y-3">
+        <h2 class="text-3xl font-bold text-slate-900">ระบบคัดกรองและติดตามอาการอัจฉริยะ</h2>
+        <p class="text-slate-500 text-sm">ประเมินอาการเบื้องต้นผ่านระบบถาม-ตอบ และตั้งปฏิทินเฝ้าระวังส่วนตัวได้ตามจำนวนวัน</p>
+      </div>
+
+      <div class="grid grid-cols-1 lg:grid-cols-12 gap-8">
+        
+        <!-- ฝั่งซ้าย: ระบบถามตอบ Chatbot -->
+        <div class="lg:col-span-7 bg-white rounded-3xl p-6 shadow-sm border border-slate-100 flex flex-col min-h-[450px]">
+          <div class="flex items-center gap-2 border-b border-slate-100 pb-3 mb-4">
+            <div class="w-3 h-3 rounded-full bg-emerald-500 animate-pulse"></div>
+            <h3 class="font-bold text-slate-800 text-sm flex items-center gap-1">
+              <i data-lucide="bot" class="w-4 h-4 text-brand-primary"></i> หมอจำลอง AI คัดกรองอาการ
+            </h3>
+          </div>
+
+          <div id="chat-box" class="flex-1 overflow-y-auto space-y-3 p-2 text-xs max-h-[300px] border border-slate-50 rounded-xl bg-slate-50/50 mb-4">
+            <div class="bg-blue-50 text-slate-700 p-3 rounded-2xl rounded-tl-none max-w-[85%]">
+              สวัสดีครับ ผมคือระบบคัดกรองอาการเบื้องต้น คุณเริ่มมีอาการไม่สบายในส่วนไหนเป็นหลักครับ? (กรุณาเลือกปุ่มด้านล่างเพื่อเริ่มวิเคราะห์)
+            </div>
+          </div>
+
+          <div id="chat-options" class="flex flex-wrap gap-2">
+            <button onclick="startChatFlow('head')" class="px-3 py-2 bg-slate-100 hover:bg-brand-primary hover:text-white rounded-xl transition text-xs font-medium">ปวดศีรษะ / ไข้</button>
+            <button onclick="startChatFlow('stomach')" class="px-3 py-2 bg-slate-100 hover:bg-brand-primary hover:text-white rounded-xl transition text-xs font-medium">ปวดท้อง / ทางเดินอาหาร</button>
+            <button onclick="startChatFlow('chest')" class="px-3 py-2 bg-slate-100 hover:bg-brand-primary hover:text-white rounded-xl transition text-xs font-medium">แน่นหน้าอก / หายใจขัด</button>
+          </div>
+        </div>
+
+        <!-- ฝั่งขวา: ระบบนับวันปฏิทินติดตามอาการ -->
+        <div class="lg:col-span-5 bg-gradient-to-br from-slate-900 to-slate-800 text-white rounded-3xl p-6 shadow-xl relative flex flex-col justify-between min-h-[450px]">
+          <div>
+            <h3 class="font-bold text-sm flex items-center gap-2 text-emerald-400 mb-1">
+              <i data-lucide="calendar-days" class="w-4 h-4"></i> ปฏิทินติดตามอาการต่อเนื่อง
+            </h3>
+            <p class="text-[11px] text-slate-400 mb-4 leading-relaxed">หากอาการยังไม่ชัดเจน สามารถกำหนดปฏิทินนับวันเพื่อแจ้งเตือนผลลัพธ์ได้</p>
+            
+            <div id="setup-tracker-view" class="space-y-4">
+              <label class="block text-[11px] font-semibold text-slate-300">เลือกจำนวนวันที่ต้องการติดตามอาการ:</label>
+              <div class="grid grid-cols-3 gap-2">
+                <button onclick="generateSymptomCalendar(3)" class="py-2.5 bg-slate-800 hover:bg-emerald-500 rounded-xl font-bold text-xs transition border border-slate-700">3 วัน</button>
+                <button onclick="generateSymptomCalendar(5)" class="py-2.5 bg-slate-800 hover:bg-emerald-500 rounded-xl font-bold text-xs transition border border-slate-700">5 วัน</button>
+                <button onclick="generateSymptomCalendar(7)" class="py-2.5 bg-slate-800 hover:bg-emerald-500 rounded-xl font-bold text-xs transition border border-slate-700">7 วัน</button>
+              </div>
+            </div>
+
+            <div id="active-tracker-view" class="hidden space-y-4">
+              <div class="flex items-center justify-between text-xs bg-slate-800/60 p-2 rounded-xl border border-slate-700/60">
+                <span class="text-[11px] text-slate-300">ความคืบหน้า: <strong id="progress-text">0/3 วัน</strong></span>
+                <button onclick="resetSymptomTracker()" class="text-[10px] text-rose-400 hover:underline">ยกเลิก/ตั้งใหม่</button>
+              </div>
+
+              <div id="calendar-grid" class="grid grid-cols-4 gap-2 py-2"></div>
+
+              <div id="day-log-box" class="bg-slate-950/60 border border-slate-800 p-3 rounded-xl space-y-2 hidden">
+                <h4 class="text-[11px] font-bold text-emerald-400" id="selected-day-title">บันทึกอาการ วันที่ 1</h4>
+                <div class="space-y-1 text-[10px] text-slate-300">
+                  <label class="flex items-center gap-2 cursor-pointer"><input type="checkbox" id="chk-worse" class="rounded"> อาการแย่ลง / ทรงตัวไม่ดี</label>
+                  <label class="flex items-center gap-2 cursor-pointer"><input type="checkbox" id="chk-fever" class="rounded"> มีไข้สูง / หนาวสั่น</label>
+                  <label class="flex items-center gap-2 cursor-pointer"><input type="checkbox" id="chk-pain" class="rounded"> เจ็บปวดจุดเดิมรุนแรง</label>
+                </div>
+                <button onclick="saveDailySymptoms()" class="w-full py-1 bg-emerald-500 hover:bg-emerald-600 text-white font-bold text-[10px] rounded transition">บันทึกผลวันนี้</button>
+              </div>
+            </div>
+          </div>
+
+          <div id="tracker-summary-box" class="bg-slate-950/40 border border-slate-800 p-3 rounded-2xl text-center text-[11px] text-slate-400 mt-4">
+            <i data-lucide="bell" class="w-4 h-4 mx-auto mb-1 text-slate-500"></i>
+            ระบบจะวิเคราะห์ความเสี่ยงให้ทันทีเมื่อคุณกดยืนยันบันทึกผลแต่ละวันครบกำหนด
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Contact Section -->
+    <section id="contact" class="py-20 border-t border-slate-100 px-6 max-w-7xl mx-auto space-y-12">
+      <div class="text-center space-y-3">
+        <h2 class="text-3xl font-bold text-slate-900">ติดต่อเรา</h2>
+        <p class="text-slate-500 text-sm">พร้อมให้บริการและตอบคำถามทุกข้อสงสัย</p>
+      </div>
+
+      <div class="grid grid-cols-1 lg:grid-cols-2 gap-12">
+        <div class="space-y-6 flex flex-col justify-between">
+          <div class="bg-slate-100 rounded-2xl p-8 flex flex-col items-center justify-center text-center border border-slate-200/60 min-h-[220px]">
+            <div class="w-12 h-12 text-brand-primary mb-3"><i data-lucide="map-pin" class="w-12 h-12"></i></div>
+            <p class="text-xs font-semibold text-slate-600 max-w-xs leading-relaxed">
+              123 ถ.สุขุมวิท แขวงคลองตัน เขตคลองเตย กรุงเทพฯ 10110
+            </p>
+          </div>
+        </div>
+
+        <div class="space-y-5">
+          <div>
+            <label class="block text-sm font-medium text-slate-700 mb-2">ชื่อ</label>
+            <input type="text" class="w-full px-4 py-3 rounded-xl border border-slate-200 focus:outline-none focus:border-brand-primary transition" placeholder="ชื่อของคุณ">
+          </div>
+          <div>
+            <label class="block text-sm font-medium text-slate-700 mb-2">ข้อความ</label>
+            <textarea rows="4" class="w-full px-4 py-3 rounded-xl border border-slate-200 focus:outline-none focus:border-brand-primary transition resize-none" placeholder="พิมพ์ข้อความของคุณ..."></textarea>
+          </div>
+          <button type="button" onclick="alert('ข้อความของคุณถูกส่งเรียบร้อยแล้ว!')" class="w-full py-3.5 bg-brand-primary hover:bg-blue-700 text-white rounded-xl font-medium transition flex items-center justify-center gap-2">
+            <i data-lucide="send" class="w-4 h-4"></i> ส่งข้อความ
+          </button>
+        </div>
+      </div>
+    </section>
+
+    <footer class="bg-white border-t border-slate-100 py-6 text-center text-xs text-slate-400">
+      <p>&copy; 2026 Healthy Advice. All rights reserved.</p>
+    </footer>
+
+  </div>
+
+
+  <!-- ================= USER PROFILE & SELF-SERVICE MODAL ================= -->
+  <div id="user-profile-modal" class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
+    <div class="bg-white w-full max-w-2xl rounded-3xl shadow-2xl p-6 border border-slate-100 flex flex-col max-h-[85vh]">
+      <div class="flex items-center justify-between border-b border-slate-100 pb-3 mb-4">
+        <div class="flex items-center gap-2">
+          <div class="p-2 bg-blue-50 text-brand-primary rounded-xl"><i data-lucide="user-cog" class="w-5 h-5"></i></div>
+          <div>
+            <h3 class="text-lg font-bold text-slate-900">โปรไฟล์และประวัติการใช้งานของฉัน</h3>
+            <p class="text-xs text-slate-400">จัดการข้อมูลผู้ใช้ นัดหมาย และความเป็นส่วนตัวบัญชี</p>
+          </div>
+        </div>
+        <button onclick="closeUserProfileModal()" class="p-1.5 text-slate-400 hover:text-slate-600 rounded-lg"><i data-lucide="x" class="w-5 h-5"></i></button>
+      </div>
+
+      <div class="grid grid-cols-1 md:grid-cols-12 gap-6 overflow-y-auto pr-1 flex-1">
+        <div class="md:col-span-5 space-y-4 border-b md:border-b-0 md:border-r border-slate-100 pb-4 md:pb-0 md:pr-4">
+          <h4 class="text-xs font-bold text-slate-700 uppercase tracking-wider">แก้ไขข้อมูลส่วนตัว</h4>
+          <form id="update-profile-form" class="space-y-3 text-xs">
+            <div>
+              <label class="block font-semibold text-slate-600 mb-1">ชื่อ-นามสกุล</label>
+              <input type="text" id="prof-name" required class="w-full px-3 py-2 border rounded-xl focus:border-brand-primary focus:outline-none">
+            </div>
+            <div>
+              <label class="block font-semibold text-slate-600 mb-1">อีเมลบัญชี (แก้ไขไม่ได้)</label>
+              <input type="email" id="prof-email" disabled class="w-full px-3 py-2 border bg-slate-50 rounded-xl text-slate-400 cursor-not-allowed">
+            </div>
+            <div>
+              <label class="block font-semibold text-slate-600 mb-1">เปลี่ยนรหัสผ่านใหม่</label>
+              <input type="password" id="prof-password" required class="w-full px-3 py-2 border rounded-xl focus:border-brand-primary focus:outline-none">
+            </div>
+            <button type="submit" class="w-full py-2 bg-brand-primary text-white font-medium rounded-xl hover:bg-blue-700 transition">อัปเดตข้อมูล</button>
+          </form>
+
+          <hr class="border-slate-100 my-4">
+          
+          <div class="bg-rose-50 p-3.5 rounded-2xl border border-rose-100 space-y-2">
+            <h5 class="text-xs font-bold text-rose-700 flex items-center gap-1"><i data-lucide="shield-alert" class="w-4 h-4"></i> โซนอันตราย (PDPA)</h5>
+            <p class="text-[11px] text-rose-500 leading-relaxed">บัญชีและใบนัดหมายทั้งหมดของคุณจะถูกทำลายถาวร</p>
+            <button onclick="selfDeleteAccount()" class="w-full py-2 bg-rose-600 text-white font-bold rounded-xl hover:bg-rose-700 transition flex items-center justify-center gap-1.5 text-xs">
+              <i data-lucide="user-x" class="w-4 h-4"></i> ลบบัญชีของฉันถาวร
+            </button>
+          </div>
+        </div>
+
+        <div class="md:col-span-7 flex flex-col h-full">
+          <h4 class="text-xs font-bold text-slate-700 uppercase tracking-wider mb-3">สถานะรายการนัดหมายของคุณ</h4>
+          <div class="overflow-y-auto flex-1 border border-slate-100 rounded-xl bg-slate-50/50 p-2 max-h-[320px]">
+            <div id="user-own-appointments" class="space-y-2"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+
+  <!-- ================= SECURE ADMIN VERIFY MODAL ================= -->
+  <div id="admin-verify-modal" class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
+    <div class="bg-white w-full max-w-md rounded-2xl shadow-xl p-6 border border-slate-100">
+      <div class="flex items-center gap-2.5 mb-3">
+        <div class="p-2 bg-purple-50 text-purple-600 rounded-xl"><i data-lucide="lock" class="w-5 h-5"></i></div>
+        <div>
+          <h3 class="text-lg font-bold text-slate-900">การยืนยันสิทธิ์แอดมินสองชั้น</h3>
+          <p class="text-xs text-slate-400">กรุณากรอกรหัสผ่านเพื่อปลดล็อกแผงควบคุมระบบหลังบ้าน</p>
+        </div>
+      </div>
+      
+      <form id="admin-verify-form" class="space-y-4 text-sm">
+        <div>
+          <label class="block text-xs font-semibold text-slate-600 mb-1.5">อีเมลผู้ดูแลระบบ (Admin Email)</label>
+          <input type="email" id="verify-email-input" required class="w-full px-4 py-2.5 rounded-xl border border-slate-200 focus:outline-none" placeholder="admin@healthy.com">
+        </div>
+        <div>
+          <label class="block text-xs font-semibold text-slate-600 mb-1.5">รหัสผ่านแอดมิน (Admin Password)</label>
+          <input type="password" id="verify-pass-input" required class="w-full px-4 py-2.5 rounded-xl border border-slate-200 focus:outline-none" placeholder="••••">
+        </div>
+        <div class="flex gap-2 justify-end text-xs font-medium pt-2">
+          <button type="button" onclick="closeAdminVerifyModal()" class="px-4 py-2 bg-slate-100 text-slate-600 rounded-xl hover:bg-slate-200 transition">ยกเลิก</button>
+          <button type="submit" class="px-4 py-2 bg-purple-600 text-white rounded-xl hover:bg-purple-700 transition">ตรวจสอบข้อมูล</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+
+  <!-- ================= ADMIN DASHBOARD MODAL ================= -->
+  <div id="admin-dashboard-modal" class="fixed inset-0 bg-slate-950/80 backdrop-blur-md z-50 hidden flex items-center justify-center p-4">
+    <div class="bg-slate-900 text-slate-100 w-full max-w-5xl rounded-3xl shadow-2xl p-6 border border-slate-800 max-h-[85vh] flex flex-col">
+      <div class="flex items-center justify-between border-b border-slate-800 pb-4 mb-5">
+        <div class="flex items-center gap-3">
+          <div class="p-2 bg-purple-500/10 text-purple-400 rounded-xl"><i data-lucide="database" class="w-6 h-6"></i></div>
+          <div>
+            <h2 class="text-xl font-bold text-white">แผงควบคุมข้อมูลระบบหลังบ้าน (Admin Dashboard)</h2>
+            <p class="text-xs text-slate-400 mt-0.5">คลังข้อมูลผู้ใช้ รายการนัดหมาย และคิวคนไข้</p>
+          </div>
+        </div>
+        <button onclick="closeAdminDashboardModal()" class="p-2 text-slate-400 hover:text-white bg-slate-800 hover:bg-slate-700 rounded-xl transition">
+          <i data-lucide="x" class="w-5 h-5"></i>
+        </button>
+      </div>
+      
+      <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 overflow-y-auto flex-1">
+        <div class="lg:col-span-5 bg-slate-950/40 border border-slate-800 rounded-2xl p-4 space-y-3 flex flex-col">
+          <h3 class="text-xs font-bold text-blue-400 flex items-center gap-1.5"><i data-lucide="users" class="w-4 h-4"></i> รายชื่อบัญชีผู้ใช้ทั้งหมด</h3>
+          <div class="overflow-x-auto flex-1">
+            <table class="w-full text-left text-xs text-slate-300">
+              <thead class="bg-slate-800 text-slate-400 uppercase text-[9px]">
+                <tr>
+                  <th class="p-2 rounded-l-lg">ชื่อ / อีเมล</th>
+                  <th class="p-2">รหัสผ่าน</th>
+                  <th class="p-2 rounded-r-lg text-center">จัดการ</th>
+                </tr>
+              </thead>
+              <tbody id="db-users-table"></tbody>
+            </table>
+          </div>
+        </div>
+        
+        <div class="lg:col-span-7 bg-slate-950/40 border border-slate-800 rounded-2xl p-4 space-y-3 flex flex-col">
+          <h3 class="text-xs font-bold text-emerald-400 flex items-center gap-1.5"><i data-lucide="calendar" class="w-4 h-4"></i> การจัดการคิวนัดหมายและสถานะ</h3>
+          <div class="overflow-x-auto flex-1">
+            <table class="w-full text-left text-xs text-slate-300">
+              <thead class="bg-slate-800 text-slate-400 uppercase text-[9px]">
+                <tr>
+                  <th class="p-2 rounded-l-lg">คนไข้ / เบอร์</th>
+                  <th class="p-2">แพทย์ / วันนัด</th>
+                  <th class="p-2 text-center">สถานะ</th>
+                  <th class="p-2 rounded-r-lg text-center">จัดการ</th>
+                </tr>
+              </thead>
+              <tbody id="db-appointments-table"></tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+
+  <!-- ================= JAVASCRIPT LOGIC CENTER ================= -->
+  <script>
+    lucide.createIcons();
+
+    // 1. Mock Local Database Setup
+    if (!localStorage.getItem('usersDB')) {
+      localStorage.setItem('usersDB', JSON.stringify([
+        { name: "ผู้ดูแลระบบ (Admin)", email: "admin@healthy.com", password: "1234", role: "admin" }
+      ]));
+    }
+    if (!localStorage.getItem('appointmentsDB')) {
+      localStorage.setItem('appointmentsDB', JSON.stringify([]));
+    }
+
+    // 🆕 2. คลังข้อมูลโรคและอาการสืบค้น (Symptom Database Dictionary)
+    const SYMPTOM_DICT = [
+      { keywords: ["ปวดหัว", "ปวดศีรษะ", "หัว", "ไมเกรน"], title: "ปวดศีรษะ / ไมเกรน", desc: "อาจเกิดจากความเครียด พักผ่อนไม่พอ หรือโรคไมเกรน", advice: "นอนพักในห้องที่มืดและเงียบ ทานยาพาราเซตามอล หากปวดรุนแรงพร้อมตาพร่ามัวควรพบแพทย์" },
+      { keywords: ["ไข้", "ตัวร้อน", "หนาวสั่น", "คัดจมูก", "ไอ", "เจ็บคอ"], title: "ไข้หวัดธรรมดา / ไข้หวัดใหญ่", desc: "เกิดจากการติดเชื้อไวรัสในระบบทางเดินหายใจ", advice: "ดื่มน้ำอุ่นมากๆ เช็ดตัวลดไข้ ทานยาลดไข้ และนอนพักผ่อนอย่างเต็มที่" },
+      { keywords: ["ปวดท้อง", "ท้องเสีย", "ถ่ายเหลว", "อ้วก", "อาเจียน", "อาหารเป็นพิษ"], title: "ท้องเสีย / อาหารเป็นพิษ", desc: "เกิดจากทานอาหารปนเปื้อนเชื้อแบคทีเรียหรือสารพิษ", advice: "จิบน้ำผสมผงเกลือแร่ (ORS) บ่อยๆ งดอาหารรสจัด ทานยาถ่านคาร์บอนซับสารพิษ" },
+      { keywords: ["แน่นหน้าอก", "เจ็บอก", "หายใจไม่ออก", "หายใจขัด"], title: "แน่นหน้าอก (เสี่ยงโรคหัวใจ / กรดไหลย้อน)", desc: "อาจเป็นสัญญาณของกล้ามเนื้อหัวใจขาดเลือด หรือกรดไหลย้อนรุนแรง", advice: "งดทำกิจกรรมทุกอย่างทันที นั่งพักในที่อากาศถ่ายเท หากมีอาการปวดร้าวไปกรามหรือแขน ร่วมกับเหงื่อออกท่วมตัว ให้รีบพบแพทย์ฉุกเฉินด่วน!" },
+      { keywords: ["แสบอก", "จุกคอ", "เรอเปรี้ยว", "กรด"], title: "โรคกรดไหลย้อน (GERD)", desc: "กรดในกระเพาะอาหารไหลย้อนกลับขึ้นมาในหลอดอาหาร", advice: "หลีกเลี่ยงการนอนทันทีหลังรับประทานอาหาร (ควรรอ 3-4 ชม.) งดชา กาแฟ และอาหารไขมันสูง" }
+    ];
+
+    let currentUserSession = null;
+
+    const authScreen = document.getElementById('auth-screen');
+    const mainLayout = document.getElementById('main-layout');
+    const loginView = document.getElementById('login-view');
+    const registerView = document.getElementById('register-view');
+    const userDisplayName = document.getElementById('user-display-name');
+    const adminVerifyModal = document.getElementById('admin-verify-modal');
+    const adminDashboardModal = document.getElementById('admin-dashboard-modal');
+    const userProfileModal = document.getElementById('user-profile-modal');
+
+    // 🆕 ฟังก์ชันการค้นหาอาการป่วย (Symptom Search Component)
+    function searchSymptoms() {
+      const query = document.getElementById('symptom-search-input').value.trim().toLowerCase();
+      const resultsBox = document.getElementById('search-results-box');
+      
+      if (!query) {
+        resultsBox.classList.add('hidden');
+        resultsBox.innerHTML = '';
+        return;
+      }
+
+      // กรองหาคำที่แมตช์ในคลังข้อมูล
+      const matched = SYMPTOM_DICT.filter(item => 
+        item.keywords.some(keyword => keyword.includes(query)) || item.title.toLowerCase().includes(query)
+      );
+
+      if (matched.length === 0) {
+        resultsBox.innerHTML = `<p class="text-slate-400 italic text-center py-2">🔍 ไม่พบข้อมูลอาการดังกล่าว ลองเปลี่ยนคำค้นหา หรือใช้ระบบ AI Chatbot ด้านล่างเพื่อประเมินละเอียดครับ</p>`;
+      } else {
+        resultsBox.innerHTML = matched.map(item => `
+          <div class="bg-white p-3 rounded-xl border border-slate-200 shadow-sm space-y-1">
+            <div class="font-bold text-brand-primary flex items-center gap-1">
+              <i data-lucide="activity" class="w-3.5 h-3.5 text-emerald-500"></i> ${item.title}
+            </div>
+            <p class="text-slate-500 text-[11px]">${item.desc}</p>
+            <div class="bg-blue-50/50 p-2 rounded-lg text-slate-700 text-[11px] border border-blue-100/60 mt-1">
+              <strong>💡 การดูแลเบื้องต้น:</strong> ${item.advice}
+            </div>
+          </div>
+        `).join('');
+      }
+      
+      resultsBox.classList.remove('hidden');
+      lucide.createIcons();
+    }
+
+
+    // ================= CHATBOT & CALENDAR SYSTEM =================
+    const chatBox = document.getElementById('chat-box');
+    const chatOptions = document.getElementById('chat-options');
+    const setupTrackerView = document.getElementById('setup-tracker-view');
+    const activeTrackerView = document.getElementById('active-tracker-view');
+    const calendarGrid = document.getElementById('calendar-grid');
+    const dayLogBox = document.getElementById('day-log-box');
+    const trackerSummaryBox = document.getElementById('tracker-summary-box');
+
+    let currentTrackerDays = 0;
+    let trackerState = {}; 
+    let selectedDayToLog = null;
+
+    function appendChatMessage(sender, text) {
+      const msg = document.createElement('div');
+      msg.className = sender === 'bot' 
+        ? "bg-blue-50 text-slate-700 p-3 rounded-2xl rounded-tl-none max-w-[85%]"
+        : "bg-brand-primary text-white p-3 rounded-2xl rounded-tr-none max-w-[85%] ml-auto text-right";
+      msg.textContent = text;
+      chatBox.appendChild(msg);
+      chatBox.scrollTop = chatBox.scrollHeight;
+    }
+
+    function startChatFlow(type) {
+      chatOptions.innerHTML = ''; 
+      if(type === 'head') {
+        appendChatMessage('user', 'มีอาการปวดศีรษะ หรือมีไข้');
+        setTimeout(() => {
+          appendChatMessage('bot', 'คุณมีอาการไข้สูงเกิน 38 องศา หรือปวดศีรษะข้างเดียวรุนแรงร่วมด้วยไหมครับ?');
+          chatOptions.innerHTML = `
+            <button onclick="endChatFlow('ไข้หวัดใหญ่/ไมเกรน', 'พักผ่อน เช็ดตัวบ่อยๆ หาก 3 วันไม่ดีขึ้น แนะนำให้เริ่มบันทึกปฏิทินติดตามอาการขวาตัวได้เลยครับ')" class="px-3 py-1.5 bg-emerald-500 text-white rounded-xl text-xs font-medium">ใช่ มีไข้สูง/ปวดมาก</button>
+            <button onclick="endChatFlow('ไข้หวัดธรรมดา', 'ทานยาพาราฯ ทุก 4-6 ชั่วโมงและดื่มน้ำอุ่นมากๆ')" class="px-3 py-1.5 bg-slate-200 rounded-xl text-xs font-medium">ไม่ใช่ แค่ครั่นเนื้อครั่นตัว</button>
+          `;
+        }, 500);
+      } else if (type === 'stomach') {
+        appendChatMessage('user', 'มีอาการปวดท้อง / ทางเดินอาหาร');
+        setTimeout(() => {
+          appendChatMessage('bot', 'มีอาการปวดบิดเกร็ง ถ่ายเหลวเกิน 3 ครั้ง หรือปวดเสียวจุดขวาล่างเฉียบพลันไหมครับ?');
+          chatOptions.innerHTML = `
+            <button onclick="endChatFlow('อาหารเป็นพิษ / เสี่ยงไส้ติ่ง', 'หากปวดท้องขวาล่างรุนแรงห้ามบีบนวดและรีบไปพบแพทย์ จิบเกลือแร่ ORS เสมอ')" class="px-3 py-1.5 bg-emerald-500 text-white rounded-xl text-xs font-medium">ใช่ มีอาการชัดเจน</button>
+            <button onclick="endChatFlow('โรคกระเพาะอาหาร', 'รับประทานอาหารอ่อนตรงเวลา หลีกเลี่ยงของเผ็ดและของดอง')" class="px-3 py-1.5 bg-slate-200 rounded-xl text-xs font-medium">ไม่ใช่ แค่จุกเสียดทั่วไป</button>
+          `;
+        }, 500);
+      } else if (type === 'chest') {
+        appendChatMessage('user', 'แน่นหน้าอก / หายใจขัด');
+        setTimeout(() => {
+          appendChatMessage('bot', 'มีอาการเจ็บร้าวไปกรามหรือไหล่ ร่วมกับเหงื่อซึมท่วมตัวไหมครับ?');
+          chatOptions.innerHTML = `
+            <button onclick="endChatFlow('ภาวะกล้ามเนื้อหัวใจขาดเลือด', 'อันตรายสูง! ควรรีบติดต่อรถฉุกเฉินไปโรงพยาบาลที่ใกล้ที่สุดทันทีครับ')" class="px-3 py-1.5 bg-rose-500 text-white rounded-xl text-xs font-medium">ใช่ มีปวดร้าวและเหงื่อท่วม</button>
+            <button onclick="endChatFlow('กรดไหลย้อน หรือกล้ามเนื้ออักเสบ', 'งดนอนราบทันทีหลังมื้ออาหาร ทานยาลดกรดเพื่อบรรเทา')" class="px-3 py-1.5 bg-slate-200 rounded-xl text-xs font-medium">ไม่ใช่ แค่แน่นอึดอัดทั่วไป</button>
+          `;
+        }, 500);
+      }
+    }
+
+    function endChatFlow(disease, recommendation) {
+      appendChatMessage('user', 'เลือกยืนยันกลุ่มอาการเรียบร้อย');
+      setTimeout(() => {
+        appendChatMessage('bot', `ผลวิเคราะห์เบื้องต้น: คุณเข้าข่ายกลุ่มเสี่ยง "${disease}" คำแนะนำ: ${recommendation}`);
+        chatOptions.innerHTML = `
+          <button onclick="resetChat()" class="px-3 py-1.5 bg-brand-primary text-white rounded-xl text-xs font-medium flex items-center gap-1"><i data-lucide="refresh-cw" class="w-3 h-3"></i> เริ่มประเมินอีกครั้ง</button>
+        `;
+        lucide.createIcons();
+      }, 500);
+    }
+
+    function resetChat() {
+      chatBox.innerHTML = `<div class="bg-blue-50 text-slate-700 p-3 rounded-2xl rounded-tl-none max-w-[85%]">สวัสดีครับ ผมคือระบบคัดกรองอาการเบื้องต้น คุณเริ่มมีอาการไม่สบายในส่วนไหนเป็นหลักครับ?</div>`;
+      chatOptions.innerHTML = `
+        <button onclick="startChatFlow('head')" class="px-3 py-2 bg-slate-100 hover:bg-brand-primary hover:text-white rounded-xl transition text-xs font-medium">ปวดศีรษะ / ไข้</button>
+        <button onclick="startChatFlow('stomach')" class="px-3 py-2 bg-slate-100 hover:bg-brand-primary hover:text-white rounded-xl transition text-xs font-medium">ปวดท้อง / ทางเดินอาหาร</button>
+        <button onclick="startChatFlow('chest')" class="px-3 py-2 bg-slate-100 hover:bg-brand-primary hover:text-white rounded-xl transition text-xs font-medium">แน่นหน้าอก / หายใจขัด</button>
+      `;
+      lucide.createIcons();
+    }
+
+    function generateSymptomCalendar(days) {
+      days = parseInt(days);
+      currentTrackerDays = days;
+      trackerState = {};
+      selectedDayToLog = null;
+      for(let i=1; i<=days; i++) {
+        trackerState[i] = { filled: false, worse: false, fever: false, pain: false };
+      }
+      setupTrackerView.classList.add('hidden');
+      activeTrackerView.classList.remove('hidden');
+      dayLogBox.classList.add('hidden');
+      renderCalendarGrid();
+      updateTrackerProgress();
+    }
+
+    function renderCalendarGrid() {
+      calendarGrid.innerHTML = '';
+      for (let i = 1; i <= currentTrackerDays; i++) {
+        let bgClass = "bg-slate-800 border-slate-700 text-slate-300";
+        let icon = `<span class="text-[10px] block opacity-40">รอผล</span>`;
+        if (trackerState[i].filled) {
+          if (trackerState[i].worse || trackerState[i].fever) {
+            bgClass = "bg-rose-600 border-rose-500 text-white";
+            icon = `<i data-lucide="alert-triangle" class="w-3 h-3 mx-auto mt-0.5"></i>`;
+          } else {
+            bgClass = "bg-emerald-600 border-emerald-500 text-white";
+            icon = `<i data-lucide="check" class="w-3 h-3 mx-auto mt-0.5"></i>`;
+          }
+        } else if (selectedDayToLog === i) {
+          bgClass = "bg-brand-primary border-white text-white ring-2 ring-blue-400";
+        }
+        calendarGrid.innerHTML += `
+          <button onclick="openDayLog(${i})" class="p-2 border rounded-xl text-center transition flex flex-col justify-between items-center ${bgClass} min-h-[55px]">
+            <span class="text-xs font-bold font-mono">D-${i}</span>
+            ${icon}
+          </button>
+        `;
+      }
+      lucide.createIcons();
+    }
+
+    function openDayLog(day) {
+      selectedDayToLog = day;
+      renderCalendarGrid();
+      document.getElementById('selected-day-title').textContent = `บันทึกอาการ วันที่ ${day}`;
+      document.getElementById('chk-worse').checked = trackerState[day].worse;
+      document.getElementById('chk-fever').checked = trackerState[day].fever;
+      document.getElementById('chk-pain').checked = trackerState[day].pain;
+      dayLogBox.classList.remove('hidden');
+    }
+
+    function saveDailySymptoms() {
+      if (!selectedDayToLog) return;
+      const day = selectedDayToLog;
+      trackerState[day].worse = document.getElementById('chk-worse').checked;
+      trackerState[day].fever = document.getElementById('chk-fever').checked;
+      trackerState[day].pain = document.getElementById('chk-pain').checked;
+      trackerState[day].filled = true;
+      dayLogBox.classList.add('hidden');
+      selectedDayToLog = null;
+      renderCalendarGrid();
+      updateTrackerProgress();
+      analyzeCalendarSymptoms();
+    }
+
+    function updateTrackerProgress() {
+      const filledCount = Object.values(trackerState).filter(d => d.filled).length;
+      document.getElementById('progress-text').textContent = `${filledCount}/${currentTrackerDays} วัน`;
+    }
+
+    function analyzeCalendarSymptoms() {
+      const stateValues = Object.values(trackerState);
+      const filledDays = stateValues.filter(d => d.filled);
+      const dangerDaysCount = filledDays.filter(d => d.worse || d.fever || d.pain).length;
+
+      if (dangerDaysCount >= 2) {
+        trackerSummaryBox.innerHTML = `
+          <div class="bg-rose-500/20 text-rose-300 border border-rose-500/30 p-2.5 rounded-xl text-left">
+            <strong class="block text-xs text-rose-400">🚨 สัญญาณเตือนอันตราย!</strong>
+            พบความผิดปกติสะสมเกิน 2 วัน ควรรีบติดต่อจองคิวนัดหมายพบแพทย์โดยเร็วครับ
+          </div>
+        `;
+        return;
+      }
+      if (filledDays.length === currentTrackerDays) {
+        trackerSummaryBox.innerHTML = dangerDaysCount === 0
+          ? `<div class="bg-emerald-500/20 text-emerald-300 border border-emerald-500/30 p-2.5 rounded-xl text-left"><strong class="block text-xs text-emerald-400">🎉 ครบกำหนด:</strong> สุขภาพฟื้นตัวปกติเรียบร้อยครับ</div>`
+          : `<div class="bg-yellow-500/20 text-yellow-300 border border-yellow-500/30 p-2.5 rounded-xl text-left"><strong class="block text-xs text-yellow-400">⚠️ เฝ้าระวัง:</strong> มีอาการคงค้างบางส่วน หากยังไม่ดีขึ้นแนะนำให้พบแพทย์</div>`;
+      } else {
+        trackerSummaryBox.innerHTML = `<span class="text-slate-300">กำลังเก็บประวัติอาการต่อเนื่อง...</span>`;
+      }
+    }
+
+    function resetSymptomTracker() {
+      currentTrackerDays = 0;
+      trackerState = {};
+      selectedDayToLog = null;
+      activeTrackerView.classList.add('hidden');
+      dayLogBox.classList.add('hidden');
+      setupTrackerView.classList.remove('hidden');
+      trackerSummaryBox.innerHTML = `<i data-lucide="bell" class="w-4 h-4 mx-auto mb-1 text-slate-500"></i>ระบบจะวิเคราะห์ความเสี่ยงเมื่อบันทึกครบกำหนด`;
+      lucide.createIcons();
+    }
+
+
+    // ================= USER PROFILE & SELF-SERVICE MANAGEMENT =================
+    function openUserProfileModal() {
+      if(!currentUserSession) return;
+      document.getElementById('prof-name').value = currentUserSession.name;
+      document.getElementById('prof-email').value = currentUserSession.email;
+      document.getElementById('prof-password').value = currentUserSession.password;
+      renderUserOwnAppointments();
+      userProfileModal.classList.remove('hidden');
+    }
+
+    function closeUserProfileModal() { userProfileModal.classList.add('hidden'); }
+
+    function renderUserOwnAppointments() {
+      const appointments = JSON.parse(localStorage.getItem('appointmentsDB')) || [];
+      const container = document.getElementById('user-own-appointments');
+      container.innerHTML = '';
+
+      const myApps = appointments.filter(a => a.ownerEmail === currentUserSession.email);
+      if(myApps.length === 0) {
+        container.innerHTML = `<p class="text-slate-400 text-center py-6 text-xs">ไม่พบคิวนัดหมายของบัญชีคุณในขณะนี้</p>`;
+        return;
+      }
+
+      myApps.forEach((a) => {
+        let badge = a.status === 'อนุมัติแล้ว' ? '<span class="px-2 py-0.5 bg-emerald-100 text-emerald-700 rounded-full">อนุมัติคิวแล้ว</span>' :
+                    a.status === 'เสร็จสิ้น' ? '<span class="px-2 py-0.5 bg-slate-200 text-slate-600 rounded-full">เสร็จสิ้นตรวจ</span>' :
+                    '<span class="px-2 py-0.5 bg-amber-100 text-amber-700 rounded-full">รอดำเนินการ</span>';
+        container.innerHTML += `
+          <div class="bg-white p-3 rounded-xl border border-slate-200 text-xs">
+            <div class="flex justify-between font-bold"><span>${a.doctor}</span><span>${badge}</span></div>
+            <div class="text-slate-500 mt-1">ผู้ป่วย: ${a.name} | 📅 วันนัด: ${a.date}</div>
+          </div>
+        `;
+      });
+    }
+
+    document.getElementById('update-profile-form').addEventListener('submit', (e) => {
+      e.preventDefault();
+      let users = JSON.parse(localStorage.getItem('usersDB'));
+      const idx = users.findIndex(u => u.email === currentUserSession.email);
+      if(idx !== -1) {
+        users[idx].name = document.getElementById('prof-name').value.trim();
+        users[idx].password = document.getElementById('prof-password').value;
+        localStorage.setItem('usersDB', JSON.stringify(users));
+        currentUserSession = users[idx];
+        userDisplayName.textContent = currentUserSession.name;
+        alert('🎉 อัปเดตข้อมูลสำเร็จ!');
+        closeUserProfileModal();
+      }
+    });
+
+    function selfDeleteAccount() {
+      if(currentUserSession.role === 'admin') { return alert('❌ บัญชีแอดมินหลักไม่สามารถลบได้ครับ'); }
+      if(confirm('⚠️ คุณต้องการลบบัญชีและทำลายประวัตินัดหมายทั้งหมดถาวรตามกฎหมายสิทธิ์ส่วนบุคคล (PDPA) ใช่หรือไม่?')) {
+        let users = JSON.parse(localStorage.getItem('usersDB')).filter(u => u.email !== currentUserSession.email);
+        let apps = JSON.parse(localStorage.getItem('appointmentsDB')).filter(a => a.ownerEmail !== currentUserSession.email);
+        localStorage.setItem('usersDB', JSON.stringify(users));
+        localStorage.setItem('appointmentsDB', JSON.stringify(apps));
+        alert('🗑️ ลบข้อมูลทั้งหมดของคุณเสร็จสิ้น ระบบจะนำคุณออกจากระบบโดยอัตโนมัติ');
+        closeUserProfileModal();
+        logout();
+      }
+    }
+
+
+    // =================🔒 ADMIN SYSTEM BACKEND LOGIC =================
+    function triggerAdminVerification() {
+      document.getElementById('verify-email-input').value = '';
+      document.getElementById('verify-pass-input').value = '';
+      adminVerifyModal.classList.remove('hidden');
+    }
+    function closeAdminVerifyModal() { adminVerifyModal.classList.add('hidden'); }
+
+    document.getElementById('admin-verify-form').addEventListener('submit', (e) => {
+      e.preventDefault();
+      const uEmail = document.getElementById('verify-email-input').value.trim();
+      const uPass = document.getElementById('verify-pass-input').value;
+      const users = JSON.parse(localStorage.getItem('usersDB'));
+
+      const isAdmin = users.find(u => u.email === uEmail && u.password === uPass && u.role === 'admin');
+      if (isAdmin) {
+        closeAdminVerifyModal();
+        loadTableDataToDashboard();
+        adminDashboardModal.classList.remove('hidden');
+      } else {
+        alert('❌ รหัสผ่านผู้ดูแลระบบไม่ถูกต้อง!');
+      }
+    });
+
+    function closeAdminDashboardModal() { adminDashboardModal.classList.add('hidden'); }
+
+    function loadTableDataToDashboard() {
+      const users = JSON.parse(localStorage.getItem('usersDB'));
+      const appointments = JSON.parse(localStorage.getItem('appointmentsDB'));
+
+      // ตารางสมาชิก
+      const uBody = document.getElementById('db-users-table');
+      uBody.innerHTML = users.map((u, i) => `
+        <tr class="border-b border-slate-800/50 text-[11px]">
+          <td class="p-2 text-white font-medium">${u.name}<br><span class="text-slate-500">${u.email}</span></td>
+          <td class="p-2 font-mono text-blue-300">${u.password}</td>
+          <td class="p-2 text-center">${u.role==='admin' ? '-' : `<button onclick="deleteUserFromAdmin(${i})" class="text-rose-400 hover:text-rose-600"><i data-lucide="trash-2" class="w-3.5 h-3.5"></i></button>`}</td>
+        </tr>
+      `).join('');
+
+      // ตารางนัดหมายและสลับสถานะ
+      const aBody = document.getElementById('db-appointments-table');
+      if(appointments.length === 0) {
+        aBody.innerHTML = `<tr><td colspan="4" class="p-4 text-center text-slate-500">ไม่มีข้อมูลนัดหมาย</td></tr>`;
+      } else {
+        aBody.innerHTML = appointments.map((a, i) => `
+          <tr class="border-b border-slate-800/50 text-[11px]">
+            <td class="p-2 text-white">${a.name}<br><span class="text-slate-400">${a.phone}</span></td>
+            <td class="p-2">${a.doctor}<br><span class="text-emerald-400 font-mono">${a.date}</span></td>
+            <td class="p-2 text-center">
+              <select onchange="updateAppointmentStatus(${i}, this.value)" class="bg-slate-800 text-xs border border-slate-700 rounded px-1 text-slate-200">
+                <option value="รอดำเนินการ" ${a.status==='รอดำเนินการ'?'selected':''}>รอดำเนินการ</option>
+                <option value="อนุมัติแล้ว" ${a.status==='อนุมัติแล้ว'?'selected':''}>อนุมัติแล้ว</option>
+                <option value="เสร็จสิ้น" ${a.status==='เสร็จสิ้น'?'selected':''}>เสร็จสิ้น</option>
+              </select>
+            </td>
+            <td class="p-2 text-center">
+              <button onclick="deleteAppointmentFromAdmin(${i})" class="text-rose-400 hover:text-rose-600"><i data-lucide="trash-2" class="w-3.5 h-3.5"></i></button>
+            </td>
+          </tr>
+        `).join('');
+      }
+      lucide.createIcons();
+    }
+
+    function updateAppointmentStatus(index, newStatus) {
+      let apps = JSON.parse(localStorage.getItem('appointmentsDB'));
+      apps[index].status = newStatus;
+      localStorage.setItem('appointmentsDB', JSON.stringify(apps));
+      loadTableDataToDashboard();
+    }
+
+    function deleteUserFromAdmin(index) {
+      if(confirm('ยืนยันลบผู้ใช้นี้ออกจากระบบหลังบ้าน?')) {
+        let users = JSON.parse(localStorage.getItem('usersDB'));
+        users.splice(index, 1);
+        localStorage.setItem('usersDB', JSON.stringify(users));
+        loadTableDataToDashboard();
+      }
+    }
+
+    function deleteAppointmentFromAdmin(index) {
+      if(confirm('ยืนยันลบใบนัดหมายนี้ออกจากระบบหลังบ้าน?')) {
+        let apps = JSON.parse(localStorage.getItem('appointmentsDB'));
+        apps.splice(index, 1);
+        localStorage.setItem('appointmentsDB', JSON.stringify(apps));
+        loadTableDataToDashboard();
+      }
+    }
+
+
+    // ================= AUTH INTEGRATION CONTROL =================
+    function toggleAuthMode(mode) {
+      if (mode === 'register') { loginView.classList.add('hidden'); registerView.classList.remove('hidden'); } 
+      else { registerView.classList.add('hidden'); loginView.classList.remove('hidden'); }
+    }
+
+    document.getElementById('register-form').addEventListener('submit', (e) => {
+      e.preventDefault();
+      const name = document.getElementById('reg-name').value.trim();
+      const email = document.getElementById('reg-email').value.trim();
+      const password = document.getElementById('reg-password').value;
+
+      let currentUsers = JSON.parse(localStorage.getItem('usersDB'));
+      if (currentUsers.some(user => user.email === email)) { return alert('❌ อีเมลนี้ถูกใช้ไปแล้วครับ'); }
+      currentUsers.push({ name, email, password, role: 'user' });
+      localStorage.setItem('usersDB', JSON.stringify(currentUsers));
+      alert('สมัครสมาชิกสำเร็จ!');
+      e.target.reset();
+      toggleAuthMode('login');
+    });
+
+    document.getElementById('login-form').addEventListener('submit', (e) => {
+      e.preventDefault();
+      const email = document.getElementById('login-email').value.trim();
+      const password = document.getElementById('login-password').value;
+      const currentUsers = JSON.parse(localStorage.getItem('usersDB'));
+      const matchedUser = currentUsers.find(user => user.email === email && user.password === password);
+
+      if (matchedUser) {
+        currentUserSession = matchedUser;
+        userDisplayName.textContent = matchedUser.name;
+        authScreen.classList.add('hidden');
+        mainLayout.classList.remove('hidden');
+        document.getElementById('symptom-search-input').value = '';
+        document.getElementById('search-results-box').classList.add('hidden');
+        window.scrollTo({ top: 0 });
+      } else { alert('❌ อีเมลหรือรหัสผ่านไม่ถูกต้อง'); }
+    });
+
+    function logout() {
+      currentUserSession = null;
+      mainLayout.classList.add('hidden');
+      authScreen.classList.remove('hidden');
+      resetSymptomTracker();
+      resetChat();
+    }
+
+    document.getElementById('appointment-form').addEventListener('submit', (e) => {
+      e.preventDefault();
+      let currentApps = JSON.parse(localStorage.getItem('appointmentsDB')) || [];
+      currentApps.push({ 
+        ownerEmail: currentUserSession.email,
+        name: document.getElementById('ap-name').value.trim(), 
+        phone: document.getElementById('ap-phone').value.trim(), 
+        doctor: document.getElementById('ap-doctor').value, 
+        date: document.getElementById('ap-date').value,
+        status: 'รอดำเนินการ'
+      });
+      localStorage.setItem('appointmentsDB', JSON.stringify(currentApps));
+      alert('👍 ส่งข้อมูลนัดหมายสำเร็จ! สามารถตรวจเช็คสถานะคิวจองที่เมนู "โปรไฟล์ของฉัน" ด้านบนครับ');
+      e.target.reset();
+    });
+  </script>
+ </body>
+</html>
